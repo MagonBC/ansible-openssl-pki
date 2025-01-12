@@ -14,7 +14,7 @@ req_extensions 		= req_ext
 distinguished_name 	= dn
 
 [ dn ]
-countryName      	= "FR"
+countryName      	= "TN"
 organizationName 	= "ARCH Linux"
 organizationalUnitName 	= "Web Servers"
 commonName 		= $1
@@ -23,14 +23,14 @@ commonName 		= $1
 subjectAltName 		= @alt_names
 
 [ alt_names ]
-DNS.1 			= $1.home.local
+DNS.1 			= $1.{{ sub_default_domain_suffix }}
 EOF
 )
 
 sleep 1
 
 openssl ca \
-	-config sub-ca.conf \
+	-config {{ ca_conf }} \
 	-in csr/$1.csr \
 	-out certs/$1.crt \
 	-extensions server_ext 

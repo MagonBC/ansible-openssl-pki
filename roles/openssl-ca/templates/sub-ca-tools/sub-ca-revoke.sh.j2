@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+cd ..
+
+openssl ca \
+	-config {{ ca_conf }} \
+	-revoke certs/$1.crt
+

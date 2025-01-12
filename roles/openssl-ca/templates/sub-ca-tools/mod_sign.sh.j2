@@ -13,7 +13,7 @@ encrypt_key     	= yes
 distinguished_name 	= dn
 
 [ dn ]
-countryName      	= "FR"
+countryName      	= "TN"
 organizationName 	= "ARCH Linux"
 organizationalUnitName 	= "Kernel Crypt"
 commonName 		= "Kernel mod Sign"
@@ -24,7 +24,7 @@ EOF
 sleep 1
 
 openssl ca \
-	-config sub-ca.conf \
+	-config {{ ca_conf }} \
 	-in csr/$1.csr \
 	-out certs/$1.crt \
 	-extensions kernel_mod_ext 

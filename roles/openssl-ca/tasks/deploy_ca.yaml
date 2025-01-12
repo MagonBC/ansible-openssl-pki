@@ -15,6 +15,7 @@
     - { name: private, mode: 700 }
     - { name: tools, mode: 755 }
     - { name: csr, mode: 755 }
+    - { name: crl, mode: 755 }
 
 - name: Create db index
   file:

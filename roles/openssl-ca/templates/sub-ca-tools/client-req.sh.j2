@@ -14,7 +14,7 @@ encrypt_key     	= yes
 distinguished_name 	= dn
 
 [ dn ]
-countryName      	= "FR"
+countryName      	= "TN"
 organizationName 	= "system:masters"
 organizationalUnitName 	= "Clients"
 commonName 		= $1
@@ -25,7 +25,7 @@ EOF
 sleep 1
 
 openssl ca \
-	-config sub-ca.conf \
+	-config {{ ca_conf }} \
 	-in csr/$1.csr \
 	-out certs/$1.crt \
 	-extensions client_ext 

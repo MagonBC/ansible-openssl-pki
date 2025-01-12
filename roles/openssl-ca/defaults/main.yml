@@ -29,4 +29,4 @@ sub_ca_dn_commonName: "Sub CA"
 #
 #kube_ca_dn_countryName: "TN"
 #kube_ca_dn_organizationName: "ARCH Linux"
-#kube_ca_dn_commonName: "Sub CA"
+#kube_ca_dn_commonName: "Kuber... CA"
