@@ -1,0 +1,32 @@
+#!/bin/bash
+cd ..
+
+openssl req -new -out csr/$1.csr -newkey rsa:4096 -keyout private/$1.key -config <(
+cat <<-EOF
+[req]
+default_bits 		= 4096
+prompt 			= no
+default_md 		= sha256
+utf8            	= yes 
+string_mask     	= utf8only 
+encrypt_key     	= yes 
+#req_extensions 		= req_ext
+distinguished_name 	= dn
+
+[ dn ]
+countryName      	= "FR"
+organizationName 	= "system:masters"
+organizationalUnitName 	= "Clients"
+commonName 		= $1
+
+EOF
+)
+
+sleep 1
+
+openssl ca \
+	-config sub-ca.conf \
+	-in csr/$1.csr \
+	-out certs/$1.crt \
+	-extensions client_ext 
+

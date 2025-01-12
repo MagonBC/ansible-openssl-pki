@@ -1,0 +1,32 @@
+---
+# defaults file for ansible-openssl-root-ca
+
+# Root CA
+root_default_name: "root-ca"
+root_default_domain_suffix: "lab.local"
+root_home_basedir: "/root"
+root_ca_default_home: "{{ root_home_basedir }}/{{ root_default_name }}-{{ root_default_domain_suffix }}"
+
+root_ca_dn_countryName: "TN"
+root_ca_dn_organizationName: "ARCH Linux"
+root_ca_dn_commonName: "Root CA"
+
+# Sub CA
+sub_default_name: "sub-ca"
+sub_default_domain_suffix: "sub.{{ root_default_domain_suffix }}"
+sub_home_basedir: "{{ root_ca_default_home }}"
+sub_ca_default_home: "{{ sub_home_basedir }}/{{ sub_default_name }}"
+
+sub_ca_dn_countryName: "TN"
+sub_ca_dn_organizationName: "ARCH Linux"
+sub_ca_dn_commonName: "Sub CA"
+
+# Kubernetes CA located under /etc/kubernetes/pki/ca.crt
+#kube_default_name: "kube-ca"
+#kube_default_domain_suffix: "{{ root_default_domain_suffix }}"
+#kube_home_basedir: "{{ root_ca_default_home }}"
+#kube_ca_default_home: "{{ kube_home_basedir }}/{{ kube_default_name }}"
+#
+#kube_ca_dn_countryName: "TN"
+#kube_ca_dn_organizationName: "ARCH Linux"
+#kube_ca_dn_commonName: "Sub CA"

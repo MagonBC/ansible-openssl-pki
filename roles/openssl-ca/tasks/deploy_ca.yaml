@@ -1,0 +1,53 @@
+---
+- name: Create CA home dir
+  file:
+    path: "{{ ca_default_home }}"
+    state: directory
+
+- name: Create subdirs with appropriate permissions
+  file:
+    path: "{{ ca_default_home }}/{{ item.name }}"
+    state: directory
+    mode: "{{ item.mode }}"
+  loop:
+    - { name: certs, mode: 755 }
+    - { name: db, mode: 755 }
+    - { name: private, mode: 700 }
+    - { name: tools, mode: 755 }
+    - { name: csr, mode: 755 }
+
+- name: Create db index
+  file:
+    path: "{{ ca_default_home }}/db/index"
+    state: touch
+
+- name: (Check 1) is db already initialised ?
+  stat:
+    path: "{{ ca_default_home }}/db/serial"
+  register: stat_serial_result
+
+- name: (Check 2) is db already initialised ?
+  stat:
+    path: "{{ ca_default_home }}/db/crlnumber"
+  register: stat_crlnumber_result
+
+- name: Create db serial
+  shell: openssl rand -hex 16  > {{ ca_default_home }}/db/serial
+  when: not stat_serial_result.stat.exists
+
+- name: Create db crlnumber
+  shell: echo 1001 > {{ ca_default_home }}/db/crlnumber
+  when: not stat_crlnumber_result.stat.exists
+
+- name: Copy CA Openssl conf file
+  template:
+    src: "{{ ca_conf }}.j2"
+    dest: "{{ ca_default_home }}/{{ ca_conf }}"
+
+- name: Copy CA tools
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ ca_default_home }}/tools/{{ item.path | regex_replace('\\.j2$', '') }}"
+    mode: 750
+  with_filetree: "{{ role_path }}/templates/{{ ca_default_name }}-tools"
+  when: item.state == 'file'

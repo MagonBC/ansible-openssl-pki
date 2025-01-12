@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cd ..
+
+openssl req -new \
+	-config sub-ca.conf \
+	-out csr/sub-ca.csr \
+	-keyout private/sub-ca.key 
+

@@ -1,0 +1,24 @@
+---
+# tasks file for ansible-openssl-root-ca
+
+- name: Deploy Root CA
+  include_tasks: deploy_ca.yaml
+  vars:
+    ca_default_home: "{{ root_ca_default_home }}"
+    ca_conf: root-ca.conf
+    ca_default_name: "{{ root_default_name }}"
+
+- name: Deploy Sub CA
+  include_tasks: deploy_ca.yaml
+  vars:
+    ca_default_home: "{{ root_ca_default_home }}/{{ sub_default_name }}"
+    ca_conf: sub-ca.conf
+    ca_default_name: "{{ sub_default_name }}"
+
+# TO DO
+#- name: Deploy Kubernetes CA
+#  include_tasks: deploy_ca.yaml
+#  vars:
+#    ca_default_home: "{{ root_ca_default_home }}/{{ kube_default_name }}"
+#    ca_conf: kube-ca.conf
+#    ca_default_name: "{{ kube_default_name }}"

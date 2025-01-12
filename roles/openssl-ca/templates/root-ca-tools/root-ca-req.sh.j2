@@ -1,0 +1,14 @@
+#!/bin/bash
+cd ..
+
+openssl req -new \
+	-config {{ ca_conf }} \
+	-out csr/{{ ca_default_name }}.csr \
+	-keyout private/{{ ca_default_name }}.key
+
+openssl ca -selfsign \
+	-config {{ ca_conf }} \
+	-in csr/{{ ca_default_name }}.csr \
+	-out certs/{{ ca_default_name }}.crt \
+	-extensions ca_ext
+

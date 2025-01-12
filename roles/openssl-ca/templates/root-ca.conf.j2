@@ -1,0 +1,132 @@
+[default] 		
+name 		= 	{{ root_default_name }}
+domain_suffix = {{ root_default_domain_suffix }}
+aia_url 	= 	http://$name.$domain_suffix/$name.crt 
+crl_url 	= 	http://$name.$domain_suffix/$name.crl 
+ocsp_url 	= 	http://ocsp.$name.$domain_suffix:9080 
+default_ca 	= 	ca_default 
+name_opt 	= 	utf8,esc_ctrl,multiline,lname,align
+
+[ca_dn]
+countryName 	 = {{ root_ca_dn_countryName }}
+organizationName = {{ root_ca_dn_organizationName }}
+commonName  	 = {{ root_ca_dn_commonName }}
+
+[ca_default] 
+home = {{ root_ca_default_home }}
+database = $home/db/index 
+serial = $home/db/serial 
+crlnumber = $home/db/crlnumber 
+certificate = $home/certs/$name.crt 
+private_key = $home/private/$name.key 
+RANDFILE = $home/private/random 
+new_certs_dir = $home/certs 
+unique_subject = no 
+copy_extensions = none 
+default_days = 3650 
+default_crl_days = 365 
+default_md = sha256 
+policy = policy_c_o_match 
+
+[policy_c_o_match] 
+countryName  	     =  match 
+stateOrProvinceName  =  optional 
+organizationName     =  match 
+organizationalUnitName  =  optional 
+commonName  		=  supplied 
+emailAddress  		=  optional 
+
+[req] 		
+default_bits 	=	4096 
+encrypt_key 	=	yes 
+default_md 	= 	sha256 
+utf8 		= 	yes 
+string_mask 	= 	utf8only 
+prompt 		= 	no 
+distinguished_name 	= ca_dn 
+req_extensions 		= ca_ext
+
+[ca_ext] 		
+basicConstraints 	= critical,CA:true 
+keyUsage 		= critical,keyCertSign,cRLSign 
+subjectKeyIdentifier 	= hash 
+
+[crl_info] 
+URI.0 			= $crl_url 
+
+[issuer_info] 
+caIssuers;URI.0 	= $aia_url 
+OCSP;URI.0 		= $ocsp_url 
+
+[ocsp_ext] 
+authorityKeyIdentifier  = keyid:always 
+basicConstraints  	= critical,CA:false 
+extendedKeyUsage  	= OCSPSigning 
+keyUsage  		= critical,digitalSignature 
+subjectKeyIdentifier  	= hash 
+
+[pub_sub_ca_ext] 
+authorityInfoAccess  	= @issuer_info 
+authorityKeyIdentifier  = keyid:always 
+basicConstraints  	= critical,CA:true,pathlen:0 
+crlDistributionPoints  	= @crl_info 
+extendedKeyUsage  	= clientAuth,serverAuth 
+keyUsage  		= critical,keyCertSign,cRLSign 
+nameConstraints  	= @name_constraints_pub_sub_ca 
+subjectKeyIdentifier  	= hash 
+
+[name_constraints_pub_sub_ca] 
+permitted;DNS.0		= {{ root_default_domain_suffix }}
+excluded;IP.0		= 0.0.0.0/0.0.0.0 
+excluded;IP.1		= 0:0:0:0:0:0:0:0/0:0:0:0:0:0:0:0
+
+[kubernetes_ca_ext]
+authorityInfoAccess  	= @issuer_info 
+authorityKeyIdentifier  = keyid:always 
+basicConstraints  	= critical,CA:true,pathlen:0 
+crlDistributionPoints  	= @crl_info 
+keyUsage  		= critical,keyCertSign,cRLSign,digitalSignature,keyEncipherment
+extendedKeyUsage        = clientAuth,serverAuth
+nameConstraints  	= @name_constraints_kubernetes 
+subjectKeyIdentifier  	= hash 
+subjectAltName 		= DNS:kubernetes
+
+[name_constraints_kubernetes] 
+permitted;DNS.0		= {{ root_default_domain_suffix }}
+permitted;DNS.1		= kubernetes
+permitted;DNS.2		= kubernetes.default
+permitted;DNS.3		= kubernetes.default.svc
+permitted;DNS.4		= kubernetes.default.svc.cluster 
+permitted;DNS.5		= kubernetes.default.svc.cluster.local
+
+[front_proxy_ca_ext]
+authorityInfoAccess  	= @issuer_info 
+authorityKeyIdentifier  = keyid:always 
+basicConstraints  	= critical,CA:true,pathlen:0 
+crlDistributionPoints  	= @crl_info 
+keyUsage  		= critical,keyCertSign,cRLSign,digitalSignature,keyEncipherment
+nameConstraints  	= @name_constraints_front_proxy_ext
+subjectKeyIdentifier  	= hash 
+subjectAltName 		= DNS:front-proxy-ca
+
+[name_constraints_front_proxy_ext]
+permitted;DNS.0={{ root_default_domain_suffix }}
+permitted;DNS.1=front-proxy-ca
+permitted;DNS.2=localhost
+
+[etcd_ca_ext]
+authorityInfoAccess  =  @issuer_info 
+authorityKeyIdentifier  =  keyid:always 
+basicConstraints  =  critical,CA:true,pathlen:0 
+crlDistributionPoints  =  @crl_info 
+keyUsage  =  critical,keyCertSign,cRLSign,digitalSignature,keyEncipherment
+nameConstraints  =  @name_constraints_etcd 
+subjectKeyIdentifier  = hash 
+subjectAltName = DNS:etcd-ca
+
+[name_constraints_etcd] 
+permitted;DNS.0={{ root_default_domain_suffix }}
+permitted;DNS.1=etcd
+permitted;DNS.2=localhost
+
+

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cd ..
+
+openssl ca \
+	-config {{ ca_conf }} \
+	-in csr/$1.csr \
+	-out certs/$1.crt \
+	-extensions $2
+
