@@ -109,12 +109,20 @@ After generating the _kern_mod_sign.crt_ and [configure secure Boot](https://dri
 in order to load them without errors:
 
 ```shell
+
+#!/bin/bash
+
 export KBUILD_SIGN_PIN=changeit
-/lib/modules/$(uname -r)/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxdrv.ko 
-/lib/modules/$(uname -r)/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxnetadp.ko 
-/lib/modules/$(uname -r)/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxnetflt.ko 
-/lib/modules/$(uname -r)/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxsf.ko 
-/lib/modules/$(uname -r)/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxguest.ko
+kernel_dir=$(uname -r)
+
+cd /lib/modules/${kernel_dir}/extra
+
+/lib/modules/${kernel_dir}/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxdrv.ko 
+/lib/modules/${kernel_dir}/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxnetadp.ko 
+/lib/modules/${kernel_dir}/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxnetflt.ko 
+/lib/modules/${kernel_dir}/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxsf.ko 
+/lib/modules/${kernel_dir}/build/scripts/sign-file sha256 /root/root-ca-lab.local/sub-ca/private/kern_mod_sign.key /root/root-ca-lab.local/sub-ca/certs/kern_mod_sign.crt vboxguest.ko
+
 ```
 
 Nice!
