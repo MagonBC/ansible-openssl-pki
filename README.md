@@ -6,6 +6,42 @@ Additionally, the role provides necessary basic commands to create, easily, TLS 
 
 To understand every detail of the configuration, while using this role, we strongly recommand reading **Evan Restic**'s awesome [Openssl CookBook](https://www.feistyduck.com/library/openssl-cookbook/online/)!
 
+Molecule Verify
+===============
+
+Molecule can be used to deploy role in a Docker image and run all scripts under tools directories using Testinfra. Example: [tests/test_pki.py](https://github.com/MagonBC/ansible-openssl-pki/blob/main/roles/openssl_ca/molecule/default/tests/test_pki.py)
+
+```shell
+magon@master:~> source /opt/project/lab/bin/activate
+(lab) magon@master:~> env | grep VIRTUAL_ENV
+VIRTUAL_ENV=/opt/project/lab
+
+(lab) magon@master:~> cd roles/openssl_ca
+(lab) magon@master:~...roles/openssl_ca> molecule test
+...
+PLAY RECAP *********************************************************************
+openssl_ca_on_docker       : ok=16   changed=2    unreachable=0    failed=0    skipped=4    rescued=0    ignored=0
+
+CRITICAL Idempotence test failed because of the following tasks:
+*  => openssl_ca : Create db index
+*  => openssl_ca : Create db index
+...
+(lab) magon@master:~...roles/openssl_ca> molecule verify
+...
+INFO     Running default > verify
+INFO     Executing Testinfra tests found in /home/magon/IdeaProjects/magon/kube-pki/ansible-openssl-pki/roles/openssl_ca/molecule/default/tests/...
+============================= test session starts ==============================
+platform linux -- Python 3.9.20, pytest-8.3.4, pluggy-1.5.0
+rootdir: /home/magon
+plugins: testinfra-10.1.1
+collected 2 items
+
+tests/test_pki.py ..                                                     [100%]
+
+============================== 2 passed in 1.97s ===============================
+INFO     Verifier completed successfully.
+...
+```
 Use cases
 =========
 The [root-ca.conf](https://github.com/MagonBC/ansible-openssl-pki/blob/main/roles/openssl-ca/templates/root-ca.conf.j2) file containes necessary extentions to:
