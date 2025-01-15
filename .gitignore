@@ -1,0 +1,2 @@
+roles/openssl_ca/molecule/default/tests/__pycache__/
+roles/openssl_ca/.yamllint

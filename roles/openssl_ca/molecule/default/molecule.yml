@@ -1,0 +1,26 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+lint: |
+  set -e
+  yamllint
+  ansible-lint
+  flake8
+driver:
+  name: docker
+platforms:
+  - name: openssl_ca_on_docker
+    image: vulhub/openssl:1.1.1m
+    pre_build_image: false
+    dockerfile: ${VIRTUAL_ENV}/lib/python3.9/site-packages/molecule_plugins/docker/playbooks/Dockerfile.j2 # use original Jinja2 template to install python
+
+provisioner:
+  name: ansible
+#  config_options:
+#    defaults:
+#      verbosity: 4
+#  env:
+verifier:
+  name: testinfra

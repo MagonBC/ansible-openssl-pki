@@ -33,7 +33,7 @@
   register: stat_crlnumber_result
 
 - name: Create db serial
-  shell: openssl rand -hex 16  > {{ ca_default_home }}/db/serial
+  shell: /usr/bin/openssl rand -hex 16  > {{ ca_default_home }}/db/serial
   when: not stat_serial_result.stat.exists
 
 - name: Create db crlnumber

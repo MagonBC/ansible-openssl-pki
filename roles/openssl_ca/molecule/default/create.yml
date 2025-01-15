@@ -1,0 +1,60 @@
+---
+- name: Create
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  # no_log: "{{ molecule_no_log }}"
+  tasks:
+    # TODO: Developer must implement and populate 'server' variable
+    # added by Magon
+    - name: Create Dockerfiles from image names
+      template:
+        src: "{{ item.dockerfile }}"
+        dest: "{{ molecule_ephemeral_directory }}/Dockerfile"
+      with_items: "{{ molecule_yml.platforms }}"
+
+    - name: Build an Ansible compatible image
+      docker_image:
+        source: build
+        build:
+          path: "{{ molecule_ephemeral_directory }}"
+        name: "localhost/{{ item.image }}"
+      with_items: "{{ molecule_yml.platforms }}"
+
+    - name: Create the target container
+      docker_container:
+        name: "{{ item.name }}"
+        image: "localhost/{{ item.image }}"
+        state: started
+        command: sleep 1d
+        log_driver: json-file
+      loop: "{{ molecule_yml.platforms }}"
+
+    #### End Magon add
+
+    - name: Create instance config
+      when: server.changed | default(false) | bool  # noqa no-handler
+      block:
+        - name: Populate instance config dict  # noqa jinja
+          ansible.builtin.set_fact:
+            instance_conf_dict: {}
+            # instance': "{{ }}",
+            # address': "{{ }}",
+            # user': "{{ }}",
+            # port': "{{ }}",
+            # 'identity_file': "{{ }}", }
+          with_items: "{{ server.results }}"
+          register: instance_config_dict
+
+        - name: Convert instance config dict to a list
+          ansible.builtin.set_fact:
+            instance_conf: "{{ instance_config_dict.results | map(attribute='ansible_facts.instance_conf_dict') | list }}"
+
+        - name: Dump instance config
+          ansible.builtin.copy:
+            content: |
+              # Molecule managed
+
+              {{ instance_conf | to_json | from_json | to_yaml }}
+            dest: "{{ molecule_instance_config }}"
+            mode: "0600"

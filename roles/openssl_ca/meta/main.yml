@@ -2,7 +2,9 @@ galaxy_info:
   author: Issam Abdelli
   description: IT Engineer
   company: Freelance
-  role_name: openssl-ca
+  role_name: openssl_ca
+  galaxy_name: openssl_ca
+  namespace: openssl_ca
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
