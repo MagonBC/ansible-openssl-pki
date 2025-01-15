@@ -9,7 +9,7 @@ To understand every detail of the configuration, while using this role, we stron
 Molecule Verify
 ===============
 
-Molecule can be used to deploy role in a Docker image and run all scripts under tools directories using Testinfra. Example: [tests/test_pki.py](https://github.com/MagonBC/ansible-openssl-pki/blob/main/roles/openssl_ca/molecule/default/tests/test_pki.py)
+Molecule can be used to deploy role in a Docker image and run all scripts under tools directories using [Testinfra](https://testinfra.readthedocs.io/en/latest/). Example: [tests/test_pki.py](https://github.com/MagonBC/ansible-openssl-pki/blob/main/roles/openssl_ca/molecule/default/tests/test_pki.py)
 
 ```shell
 magon@master:~> source /opt/project/lab/bin/activate
