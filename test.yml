@@ -1,4 +1,4 @@
 ---
 - hosts: localhost
   roles:
-    - openssl-ca
+    - openssl_ca
